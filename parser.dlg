@@ -1,0 +1,220 @@
+<<
+/* parser.dlg -- DLG Description of scanner
+ *
+ * Generated from: lego.g
+ *
+ * Terence Parr, Will Cohen, and Hank Dietz: 1989-2001
+ * Purdue University Electrical Engineering
+ * With AHPCRC, University of Minnesota
+ * ANTLR Version 1.33MR33
+ */
+
+#define ANTLR_VERSION	13333
+#include "pcctscfg.h"
+#include "pccts_stdio.h"
+
+#include <string>
+#include <iostream>
+#include <map>
+using namespace std;
+
+// struct to store information about tokens
+typedef struct {
+  string kind;
+  string text;
+} Attrib;
+
+// function to fill token information (predeclaration)
+void zzcr_attr(Attrib *attr, int type, char *text);
+
+// fields for AST nodes
+#define AST_FIELDS string kind; string text;
+#include "ast.h"
+
+// macro to create a new AST node (and function predeclaration)
+#define zzcr_ast(as,attr,ttype,textt) as=createASTnode(attr,ttype,textt)
+AST* createASTnode(Attrib* attr,int ttype, char *textt);
+#include "antlr.h"
+#include "ast.h"
+#include "tokens.h"
+#include "dlgdef.h"
+LOOKAHEAD
+
+void
+#ifdef __USE_PROTOS
+zzerraction(void)
+#else
+zzerraction()
+#endif
+{
+	(*zzerr)("invalid token");
+	zzadvance();
+	zzskip();
+}
+>>
+
+
+%%START
+
+@
+	<<
+		NLA = 1;
+	>>
+
+[0-9]+
+	<<
+		NLA = NUM;
+	>>
+
+Grid
+	<<
+		NLA = GRID;
+	>>
+
+PLACE
+	<<
+		NLA = PLACE;
+	>>
+
+POP
+	<<
+		NLA = POP;
+	>>
+
+AT
+	<<
+		NLA = AT;
+	>>
+
+MOVE
+	<<
+		NLA = MOVE;
+	>>
+
+PUSH
+	<<
+		NLA = PUSH;
+	>>
+
+WHILE
+	<<
+		NLA = WHILE;
+	>>
+
+FITS
+	<<
+		NLA = FITS;
+	>>
+
+\(
+	<<
+		NLA = LPAR;
+	>>
+
+\)
+	<<
+		NLA = RPAR;
+	>>
+
+\[
+	<<
+		NLA = OB;
+	>>
+
+\]
+	<<
+		NLA = CB;
+	>>
+
+,
+	<<
+		NLA = COMMA;
+	>>
+
+HEIGHT
+	<<
+		NLA = HEIGHT;
+	>>
+
+NORTH
+	<<
+		NLA = NORTH;
+	>>
+
+EAST
+	<<
+		NLA = EAST;
+	>>
+
+SOUTH
+	<<
+		NLA = SOUTH;
+	>>
+
+WEST
+	<<
+		NLA = WEST;
+	>>
+
+DEF
+	<<
+		NLA = DEF;
+	>>
+
+ENDEF
+	<<
+		NLA = ENDEF;
+	>>
+
+<=
+	<<
+		NLA = CMP_LESS_EQUAL;
+	>>
+
+>=
+	<<
+		NLA = CMP_GRATER_EQUAL;
+	>>
+
+<
+	<<
+		NLA = CMP_LESS;
+	>>
+
+>
+	<<
+		NLA = CMP_GREATER;
+	>>
+
+==
+	<<
+		NLA = CMP_EQUAL;
+	>>
+
+=
+	<<
+		NLA = EQUAL;
+	>>
+
+AND
+	<<
+		NLA = AND;
+	>>
+
+OR
+	<<
+		NLA = OR;
+	>>
+
+[A-Z]+([A-Z]|[0-9])*
+	<<
+		NLA = VAR;
+	>>
+
+[\ \n]
+	<<
+		NLA = SPACE;
+    zzskip();  
+	>>
+
+%%

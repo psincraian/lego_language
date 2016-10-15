@@ -147,6 +147,7 @@ int main() {
 #token AND "AND"
 #token OR "OR"
 #token VAR "[A-Z]+([A-Z]|[0-9])*"
+#token TAB "[\t]" << zzskip();>>
 #token SPACE "[\ \n]" << zzskip();>>
 
 lego: (grid ops defs) <<#0=createASTlist(_sibling);>>;

@@ -211,6 +211,12 @@ OR
 		NLA = VAR;
 	>>
 
+[\t]
+	<<
+		NLA = TAB;
+    zzskip();  
+	>>
+
 [\ \n]
 	<<
 		NLA = SPACE;

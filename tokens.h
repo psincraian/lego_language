@@ -39,8 +39,9 @@
 #define AND 29
 #define OR 30
 #define VAR 31
-#define SPACE 32
-#define CMP_GREATER_EQUAL 33
+#define TAB 32
+#define SPACE 33
+#define CMP_GREATER_EQUAL 34
 
 #ifdef __USE_PROTOS
 void lego(AST**_root);

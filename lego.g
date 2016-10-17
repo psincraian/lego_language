@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include "Board.hpp"
 using namespace std;
 
 // struct to store information about tokens
@@ -27,7 +28,6 @@ AST* createASTnode(Attrib* attr,int ttype, char *textt);
 #include <cstdlib>
 #include <cmath>
 
-//global structures
 AST *root;
 
 
@@ -106,12 +106,71 @@ void ASTPrint(AST *a)
   }
 }
 
+Board board;
 
+void createGrid(AST *a)
+{
+    int rows = stoi(a->down->kind);
+    int columns = stoi(a->down->right->kind);
+    board = Board(rows, columns);
+}
+
+Block* push(AST *a)
+{
+    return NULL;
+}
+
+Block* place(AST *a)
+{
+    int width = stoi(a->down->down->kind);
+    int height = stoi(a->down->down->right->kind);
+    int column = stoi(a->down->right->down->kind);
+    int row = stoi(a->down->right->down->right->kind);
+
+    return board.place(row - 1, column - 1, width, height);
+}
+
+Block* getBlock(AST *a)
+{
+    if (a == NULL)
+        return NULL;
+    else if (a->kind == "PUSH")
+        return push(a);
+    else if (a->kind == "PLACE")
+        return place(a);
+    else {
+        string msg = "operation " + a->kind + " don't return a Block";
+        throw msg;
+    }
+}
+
+void equal(AST *a)
+{
+    string id = a->down->kind;
+    Block *block = getBlock(a->down->right);
+    board.equal(id, block);
+}
+
+void interpret(AST *a)
+{
+    if (a == NULL)
+        return;
+    else if (a->kind == "list")
+        interpret(a->down);
+    else if (a->kind == "Grid") {
+        createGrid(a);
+        interpret(a->right);
+    } else if (a->kind == "=") {
+        equal(a);
+    }
+}
 
 int main() {
   root = NULL;
   ANTLR(lego(&root), stdin);
   ASTPrint(root);
+  interpret(root);
+  cout << board << endl;
 }
 >>
 

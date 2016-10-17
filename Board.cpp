@@ -1,5 +1,10 @@
 #include "Board.hpp"
 
+Board::Board()
+{
+
+}
+
 Board::Board(int width, int height)
 {
     this->width = width;
@@ -11,16 +16,42 @@ Board::Board(int width, int height)
 void Board::push(Block *b, int row, int column)
 {
     if (fitsInPosition(*b, row, column)) {
-        int finalRow = row + b->getHeight();
-        int finalColumn = row + b->getWidth();
-        for (int i = row; i < finalRow; ++i) {
-            for (int j = column; j < finalColumn; ++j)
-                matrix[i][j] = b;
-        }
+        setBlock(b, row, column);
     } else {
         string msg = "Can't put " + b->getId() + " at " +
-            to_string(row) + "x" + to_string(column);
+            to_string(row) + "," + to_string(column);
         throw msg;
+    }
+}
+
+void Board::equal(string id, Block *block)
+{
+    blocks[id] = block;
+    block->setId(id);
+}
+
+Block* Board::place(int row, int column, int width, int height)
+{
+    Block *block = new Block(width, height);
+    if (fitsInPosition(*block, row, column)) {
+        setBlock(block, row, column);
+    } else {
+        delete block;
+        string msg = "Can't put " + to_string(width) + "x" + to_string(height) +
+            " at " + to_string(row) + "," + to_string(column);
+        throw msg;
+    }
+
+    return block;
+}
+
+void Board::setBlock(Block *b, int row, int column)
+{
+    int finalRow = row + b->getHeight();
+    int finalColumn = column + b->getWidth();
+    for (int i = row; i < finalRow; ++i) {
+        for (int j = column; j < finalColumn; ++j)
+            matrix[i][j] = b;
     }
 }
 
@@ -43,4 +74,25 @@ bool Board::fitsInPosition(const Block &block, int row, int column) const
     }
 
     return fits;
+}
+
+ostream& operator<<(ostream& os, const Board &board)
+{
+    os << "Board " + to_string(board.height) + "x" + to_string(board.width) << endl;
+
+    for (int i = 0; i < board.matrix.size(); ++i) {
+        for (int j = 0; j < board.matrix[0].size(); ++j) {
+            if (board.matrix[i][j] != NULL) {
+                if ((board.matrix[i][j])->getId() != "")
+                    os << (board.matrix[i][j])->getId();
+                else
+                    os << (board.matrix[i][j])->getHeight() << " + " << (board.matrix[i][j])->getWidth();
+            } else
+                os << "-";
+            os << "\t";
+        }
+        os << endl;
+    }
+
+    return os;
 }

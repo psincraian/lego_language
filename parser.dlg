@@ -16,6 +16,7 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include "Board.hpp"
 using namespace std;
 
 // struct to store information about tokens

@@ -2,6 +2,15 @@
 
 #include <utility>
 
+Block::Block(int width, int height)
+{
+    this->width = width;
+    this->height = height;
+    remainingSpace = width*height;
+    over = list<Block*>();
+    matrix = vector<vector<Block*>>(width, vector<Block*>(height));
+}
+
 Block::Block(string id, int width, int height)
 {
     this->id = id;
@@ -34,6 +43,11 @@ bool Block::fits(const Block &block) const
 
     pair<int, int> fits = getFitPosition(block);
     return fits.first != -1 and fits.second != -1;
+}
+
+void Block::setId(string id)
+{
+    this->id = id;
 }
 
 void Block::push(Block *block)

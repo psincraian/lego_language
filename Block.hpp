@@ -22,6 +22,7 @@ public:
 
     int getWidth() const;
     int getHeight() const;
+    string getId() const;
     bool fits(const Block &block) const;
 
     void push(Block *block);

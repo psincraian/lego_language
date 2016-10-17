@@ -22,6 +22,11 @@ int Block::getWidth() const
     return width;
 }
 
+string Block::getId() const
+{
+    return id;
+}
+
 bool Block::fits(const Block &block) const
 {
     if (remainingSpace < block.width*block.height)

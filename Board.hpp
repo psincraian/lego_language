@@ -5,17 +5,20 @@
 
 using namespace std;
 
-typedef vector<vector<string>> Matrix;
+typedef vector<vector<Block*>> Matrix;
 
 class Board
 {
+private:
     map<string, Block> blocks;
     Matrix matrix;
-    int x;
-    int y;
-    int z;
+    int width;
+    int height;
 
+    bool fitsInPosition(const Block &block, int row, int column) const;
+
+public:
     Board(int x, int y);
 
-    void push(Block b, int x, int y);
+    void push(Block *b, int row, int column);
 };

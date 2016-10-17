@@ -46,9 +46,9 @@ void zzcr_attr(Attrib *attr, int type, char *text) {
 // function to create a new AST node
 AST* createASTnode(Attrib* attr, int type, char* text) {
   AST* as = new AST;
-  as->kind = attr->kind; 
+  as->kind = attr->kind;
   as->text = attr->text;
-  as->right = NULL; 
+  as->right = NULL;
   as->down = NULL;
   return as;
 }
@@ -88,7 +88,7 @@ void ASTPrintIndent(AST *a,string s)
     ASTPrintIndent(i,s+"  |"+string(i->kind.size()+i->text.size(),' '));
     i=i->right;
   }
-  
+
   if (i!=NULL) {
       cout<<s+"  \\__";
       ASTPrintIndent(i,s+"   "+string(i->kind.size()+i->text.size(),' '));
@@ -96,7 +96,7 @@ void ASTPrintIndent(AST *a,string s)
   }
 }
 
-/// print AST 
+/// print AST
 void ASTPrint(AST *a)
 {
   while (a!=NULL) {
@@ -154,7 +154,7 @@ lego: (grid ops defs) <<#0=createASTlist(_sibling);>>;
 
 grid: GRID^ NUM NUM ;
 
-ops:	(	
+ops:	(
 			op_while		|
 			op_id		 	|
 			op_move 		|

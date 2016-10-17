@@ -1,3 +1,4 @@
 lego
-*.c
+*.o
+*.gch
 sample.txt

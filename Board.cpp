@@ -160,7 +160,7 @@ void Board::moveEast(int row, int col, int units)
         for (int j = width - 1; j >= 0; --j) {
             Block *oldBlock = matrix[row + i][col + j];
             Block *newBlock = matrix[finalRow + i][finalCol + j];
-            if (newBlock != NULL && newBlock != oldBlock)
+            if (newBlock != NULL)
                 throw "There is a block in final position while MOVE " + to_string(units) + " EAST";
             swap(matrix[row + i][col + j], matrix[finalRow + i][finalCol + j]);
         }

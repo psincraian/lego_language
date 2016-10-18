@@ -207,6 +207,11 @@ OR
 		NLA = OR;
 	>>
 
+PRINTBLOCK
+	<<
+		NLA = PRINTBLOCK;
+	>>
+
 PRINT
 	<<
 		NLA = PRINT;

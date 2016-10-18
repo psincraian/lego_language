@@ -117,7 +117,9 @@ void createGrid(AST *a)
 
 Block* push(AST *a)
 {
-    return NULL;
+    Block *over = board.find(a->down->kind);
+    Block *base = board.find(a->down->right->kind);
+    return board.push(base, over);
 }
 
 Block* place(AST *a)
@@ -164,6 +166,12 @@ void print(AST *a)
     cout << board << endl;
 }
 
+void printblock(AST *a)
+{
+    Block *b = board.find(a->down->kind);
+    cout << *b << endl;
+}
+
 void interpret(AST *a)
 {
     if (a == NULL)
@@ -181,6 +189,9 @@ void interpret(AST *a)
         interpret(a->right);
     } else if (a->kind == "PRINT") {
         print(a);
+        interpret(a->right);
+    } else if (a->kind == "PRINTBLOCK") {
+        printblock(a);
         interpret(a->right);
     }
 }
@@ -228,6 +239,7 @@ int main() {
 #token EQUAL "="
 #token AND "AND"
 #token OR "OR"
+#token PRINTBLOCK "PRINTBLOCK"
 #token PRINT "PRINT"
 #token VAR "[A-Z]+([A-Z]|[0-9])*"
 #token TAB "[\t]" << zzskip();>>
@@ -238,6 +250,7 @@ lego: (grid ops defs) <<#0=createASTlist(_sibling);>>;
 grid: GRID^ NUM NUM ;
 
 ops:	(
+            op_print_b      |
             op_print        |
 			op_while		|
 			op_id		 	|
@@ -247,7 +260,8 @@ ops:	(
 
 
 op_id:		VAR {EQUAL^ ops_equal};
-op_print:   PRINT^ ;
+op_print_b: PRINTBLOCK^ VAR;
+op_print:   PRINT^;
 op_move: 	MOVE^ VAR (NORTH | EAST | SOUTH | WEST) NUM;
 op_height:	HEIGHT^ LPAR! VAR RPAR!;
 

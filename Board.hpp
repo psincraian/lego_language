@@ -20,6 +20,7 @@ private:
     void setBlock(Block *b, int row, int column);
     void moveSouthOrEast(int row, int col, int units, string direction);
     void moveNorthOrWest(int row, int col, int units, string direction);
+    void deleteBlock(Block *b);
 
 public:
     string NORTH = "NORTH";
@@ -30,7 +31,9 @@ public:
     Board();
     Board(int x, int y);
 
-    void push(Block *b, int row, int column);
+    Block* find(string id) const;
+
+    Block* push(Block *a, Block *b);
     void equal(string id, Block *b);
     void move(string id, string direction, int units);
     Block* place(int row, int column, int width, int height);

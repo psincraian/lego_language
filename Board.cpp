@@ -15,15 +15,30 @@ Board::Board(int width, int height)
     matrix = Matrix(height, vector<Block*>(width));
 }
 
-void Board::push(Block *b, int row, int column)
+Block* Board::find(string id) const
 {
-    if (fitsInPosition(*b, row, column)) {
-        setBlock(b, row, column);
-    } else {
-        string msg = "Can't put " + b->getId() + " at " +
-            to_string(row) + "," + to_string(column);
-        throw msg;
+    auto it = blocks.find(id);
+    if (it != blocks.end())
+        return it->second;
+    else
+        return NULL;
+}
+
+Block* Board::push(Block *a, Block *b)
+{
+    if (a->getId() == "")
+        throw "The base block is not a valid block";
+
+    if (a->getId() == b->getId())
+        throw "Can't push a block over itself";
+
+    if (a->fits(*b)) {
+        a->push(b);
+        if (b->getId() != "")
+            deleteBlock(b);
     }
+
+    return a;
 }
 
 void Board::equal(string id, Block *block)
@@ -73,6 +88,23 @@ void Board::setBlock(Block *b, int row, int column)
     for (int i = row; i < finalRow; ++i) {
         for (int j = column; j < finalColumn; ++j)
             matrix[i][j] = b;
+    }
+}
+
+void Board::deleteBlock(Block *b)
+{
+    auto it = positions.find(b);
+    int row, col;
+    if (it != positions.end()) {
+        row = (it->second).first;
+        col = (it->second).second;
+        positions[b] = make_pair(-1, -1);
+    } else
+        throw "Can't find block int deleteBlock()";
+
+    for (int i = row; i < row + b->getHeight(); ++i) {
+        for (int j = col; j < col + b->getWidth(); ++j)
+            matrix[i][j] = NULL;
     }
 }
 

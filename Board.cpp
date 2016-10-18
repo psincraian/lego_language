@@ -59,6 +59,9 @@ void Board::move(string id, string direction, int units)
     if (direction == NORTH) {
         moveNorth(row, col, units);
         positions[itBlock->second] = make_pair(row - units, col);
+    } else if (direction == EAST) {
+        moveEast(row, col, units);
+        positions[itBlock->second] = make_pair(row, col + units);
     }
 }
 
@@ -112,6 +115,28 @@ void Board::moveNorth(int row, int col, int units)
             Block *newBlock = matrix[finalRow + i][finalCol + j];
             if (newBlock != NULL)
                 throw "There is a block in final position while MOVE " + to_string(units) + " NORTH";
+            swap(matrix[row + i][col + j], matrix[finalRow + i][finalCol + j]);
+        }
+    }
+}
+
+void Board::moveEast(int row, int col, int units)
+{
+    if (col + units >= width)
+        throw "MOVE " + to_string(units) + " EAST is outside the Grid";
+
+    int width = (matrix[row][col])->getWidth();
+    int height = (matrix[row][col])->getHeight();
+
+    int finalRow = row;
+    int finalCol = col + units;
+
+    for (int i = height - 1; i >= 0; --i) {
+        for (int j = width - 1; j >= 0; --j) {
+            Block *oldBlock = matrix[row + i][col + j];
+            Block *newBlock = matrix[finalRow + i][finalCol + j];
+            if (newBlock != NULL && newBlock != oldBlock)
+                throw "There is a block in final position while MOVE " + to_string(units) + " EAST";
             swap(matrix[row + i][col + j], matrix[finalRow + i][finalCol + j]);
         }
     }

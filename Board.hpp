@@ -21,6 +21,7 @@ private:
     void moveNorth(int row, int col, int units);
     void moveSouth(int row, int col, int units);
     void moveEast(int row, int col, int units);
+    void moveWest(int row, int col, int units);
 
 public:
     string NORTH = "NORTH";

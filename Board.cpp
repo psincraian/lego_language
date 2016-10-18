@@ -147,11 +147,11 @@ void Board::moveSouth(int row, int col, int units)
 
 void Board::moveEast(int row, int col, int units)
 {
-    if (col + units >= width)
-        throw "MOVE " + to_string(units) + " EAST is outside the Grid";
-
     int width = (matrix[row][col])->getWidth();
     int height = (matrix[row][col])->getHeight();
+
+    if (col + width + units > this->width)
+        throw "MOVE " + to_string(units) + " EAST is outside the Grid";
 
     int finalRow = row;
     int finalCol = col + units;

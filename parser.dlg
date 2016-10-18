@@ -207,6 +207,11 @@ OR
 		NLA = OR;
 	>>
 
+PRINT
+	<<
+		NLA = PRINT;
+	>>
+
 [A-Z]+([A-Z]|[0-9])*
 	<<
 		NLA = VAR;

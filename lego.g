@@ -151,6 +151,19 @@ void equal(AST *a)
     board.equal(id, block);
 }
 
+void move(AST *a)
+{
+    string id = a->down->kind;
+    string direction = a->down->right->kind;
+    int units = stoi(a->down->right->right->kind);
+    board.move(id, direction, units);
+}
+
+void print(AST *a)
+{
+    cout << board << endl;
+}
+
 void interpret(AST *a)
 {
     if (a == NULL)
@@ -162,6 +175,13 @@ void interpret(AST *a)
         interpret(a->right);
     } else if (a->kind == "=") {
         equal(a);
+        interpret(a->right);
+    } else if (a->kind == "MOVE") {
+        move(a);
+        interpret(a->right);
+    } else if (a->kind == "PRINT") {
+        print(a);
+        interpret(a->right);
     }
 }
 
@@ -169,8 +189,11 @@ int main() {
   root = NULL;
   ANTLR(lego(&root), stdin);
   ASTPrint(root);
-  interpret(root);
-  cout << board << endl;
+  try {
+      interpret(root);
+  } catch (string msg) {
+      cout << msg << endl;
+  }
 }
 >>
 
@@ -205,6 +228,7 @@ int main() {
 #token EQUAL "="
 #token AND "AND"
 #token OR "OR"
+#token PRINT "PRINT"
 #token VAR "[A-Z]+([A-Z]|[0-9])*"
 #token TAB "[\t]" << zzskip();>>
 #token SPACE "[\ \n]" << zzskip();>>
@@ -214,6 +238,7 @@ lego: (grid ops defs) <<#0=createASTlist(_sibling);>>;
 grid: GRID^ NUM NUM ;
 
 ops:	(
+            op_print        |
 			op_while		|
 			op_id		 	|
 			op_move 		|
@@ -222,6 +247,7 @@ ops:	(
 
 
 op_id:		VAR {EQUAL^ ops_equal};
+op_print:   PRINT^ ;
 op_move: 	MOVE^ VAR (NORTH | EAST | SOUTH | WEST) NUM;
 op_height:	HEIGHT^ LPAR! VAR RPAR!;
 

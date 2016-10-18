@@ -38,10 +38,11 @@
 #define EQUAL 28
 #define AND 29
 #define OR 30
-#define VAR 31
-#define TAB 32
-#define SPACE 33
-#define CMP_GREATER_EQUAL 34
+#define PRINT 31
+#define VAR 32
+#define TAB 33
+#define SPACE 34
+#define CMP_GREATER_EQUAL 35
 
 #ifdef __USE_PROTOS
 void lego(AST**_root);
@@ -65,6 +66,12 @@ extern void ops();
 void op_id(AST**_root);
 #else
 extern void op_id();
+#endif
+
+#ifdef __USE_PROTOS
+void op_print(AST**_root);
+#else
+extern void op_print();
 #endif
 
 #ifdef __USE_PROTOS
@@ -176,17 +183,18 @@ extern SetWordType setwd1[];
 extern SetWordType zzerr3[];
 extern SetWordType zzerr4[];
 extern SetWordType zzerr5[];
-extern SetWordType zzerr6[];
 extern SetWordType setwd2[];
+extern SetWordType zzerr6[];
 extern SetWordType zzerr7[];
 extern SetWordType zzerr8[];
 extern SetWordType zzerr9[];
 extern SetWordType zzerr10[];
+extern SetWordType setwd3[];
 extern SetWordType zzerr11[];
 extern SetWordType zzerr12[];
 extern SetWordType zzerr13[];
-extern SetWordType setwd3[];
 extern SetWordType zzerr14[];
 extern SetWordType zzerr15[];
 extern SetWordType zzerr16[];
 extern SetWordType setwd4[];
+extern SetWordType setwd5[];

@@ -18,10 +18,8 @@ private:
 
     bool fitsInPosition(const Block &block, int row, int column) const;
     void setBlock(Block *b, int row, int column);
-    void moveNorth(int row, int col, int units);
-    void moveSouth(int row, int col, int units);
-    void moveEast(int row, int col, int units);
-    void moveWest(int row, int col, int units);
+    void moveSouthOrEast(int row, int col, int units, string direction);
+    void moveNorthOrWest(int row, int col, int units, string direction);
 
 public:
     string NORTH = "NORTH";

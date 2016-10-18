@@ -56,19 +56,11 @@ void Board::move(string id, string direction, int units)
     auto it = positions.find(itBlock->second);
     int row = (it->second).first;
     int col = (it->second).second;
-    if (direction == NORTH) {
-        moveNorth(row, col, units);
-        positions[itBlock->second] = make_pair(row - units, col);
-    } else if (direction == EAST) {
-        moveEast(row, col, units);
-        positions[itBlock->second] = make_pair(row, col + units);
-    } else if (direction == SOUTH) {
-        moveSouth(row, col, units);
-        positions[itBlock->second] = make_pair(row + units, col);
-    } else if (direction == WEST) {
-        moveWest(row, col, units);
-        positions[itBlock->second] = make_pair(row, col - units);
-    } else
+    if (direction == NORTH or direction == WEST)
+        moveNorthOrWest(row, col, units, direction);
+    else if (direction == SOUTH or direction == EAST)
+        moveSouthOrEast(row, col, units, direction);
+    else
         throw "Direction " + direction + " is invalid";
 }
 
@@ -105,92 +97,56 @@ bool Board::fitsInPosition(const Block &block, int row, int column) const
     return fits;
 }
 
-void Board::moveNorth(int row, int col, int units)
-{
-    if (row - units < 0)
-        throw "MOVE " + to_string(units) + " NORTH is outside the Grid";
-
-    int width = (matrix[row][col])->getWidth();
-    int height = (matrix[row][col])->getHeight();
-
-    int finalRow = row - units;
-    int finalCol = col;
-
-    for (int i = 0; i < height; ++i) {
-        for (int j = 0; j < width; ++j) {
-            Block *oldBlock = matrix[row + i][col + j];
-            Block *newBlock = matrix[finalRow + i][finalCol + j];
-            if (newBlock != NULL)
-                throw "There is a block in final position while MOVE " + to_string(units) + " NORTH";
-            swap(matrix[row + i][col + j], matrix[finalRow + i][finalCol + j]);
-        }
-    }
-}
-
-void Board::moveSouth(int row, int col, int units)
+void Board::moveSouthOrEast(int row, int col, int units, string direction)
 {
     int width = (matrix[row][col])->getWidth();
     int height = (matrix[row][col])->getHeight();
 
-    if (row + units + height > this->height)
-        throw "MOVE " + to_string(units) + " SOUTH is outside the Grid";
+    int finalRow = row, finalCol = col;
+    if (direction == SOUTH)
+        finalRow += units;
+    else
+        finalCol += units;
 
-    int finalRow = row + units;
-    int finalCol = col;
+    if (finalCol > this->width or finalRow > this->height)
+        throw "MOVE " + to_string(units) + direction + " is outside the Grid";
 
     for (int i = height - 1; i >= 0; --i) {
         for (int j = width - 1; j >= 0; --j) {
-            Block *oldBlock = matrix[row + i][col + j];
             Block *newBlock = matrix[finalRow + i][finalCol + j];
             if (newBlock != NULL)
-                throw "There is a block in final position while MOVE " + to_string(units) + " SOUTH";
+                throw "There is a block in final position while MOVE " + to_string(units) + " " + direction;
             swap(matrix[row + i][col + j], matrix[finalRow + i][finalCol + j]);
         }
     }
+
+    positions[matrix[finalRow][finalCol]] = make_pair(finalRow, finalCol);
 }
 
-void Board::moveEast(int row, int col, int units)
+void Board::moveNorthOrWest(int row, int col, int units, string direction)
 {
     int width = (matrix[row][col])->getWidth();
     int height = (matrix[row][col])->getHeight();
 
-    if (col + width + units > this->width)
-        throw "MOVE " + to_string(units) + " EAST is outside the Grid";
+    int finalRow = row, finalCol = col;
+    if (direction == WEST)
+        finalCol -= units;
+    else
+        finalRow -= units;
 
-    int finalRow = row;
-    int finalCol = col + units;
-
-    for (int i = height - 1; i >= 0; --i) {
-        for (int j = width - 1; j >= 0; --j) {
-            Block *oldBlock = matrix[row + i][col + j];
-            Block *newBlock = matrix[finalRow + i][finalCol + j];
-            if (newBlock != NULL)
-                throw "There is a block in final position while MOVE " + to_string(units) + " EAST";
-            swap(matrix[row + i][col + j], matrix[finalRow + i][finalCol + j]);
-        }
-    }
-}
-
-void Board::moveWest(int row, int col, int units)
-{
-    int width = (matrix[row][col])->getWidth();
-    int height = (matrix[row][col])->getHeight();
-
-    if (col - units < 0)
-        throw "MOVE " + to_string(units) + " WEST is outside the Grid";
-
-    int finalRow = row;
-    int finalCol = col - units;
+    if (finalCol < 0 or finalRow < 0)
+        throw "MOVE " + to_string(units) + direction + "  is outside the Grid";
 
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
-            Block *oldBlock = matrix[row + i][col + j];
             Block *newBlock = matrix[finalRow + i][finalCol + j];
             if (newBlock != NULL)
-                throw "There is a block in final position while MOVE " + to_string(units) + " WEST";
+                throw "There is a block in final position while MOVE " + to_string(units) + " " + direction;
             swap(matrix[row + i][col + j], matrix[finalRow + i][finalCol + j]);
         }
     }
+
+    positions[matrix[finalRow][finalCol]] = make_pair(finalRow, finalCol);
 }
 
 ostream& operator<<(ostream& os, const Board &board)

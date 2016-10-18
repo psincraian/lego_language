@@ -12,7 +12,7 @@ Board::Board(int width, int height)
     this->width = width;
     this->height = height;
 
-    matrix = Matrix(width, vector<Block*>(height));
+    matrix = Matrix(height, vector<Block*>(width));
 }
 
 void Board::push(Block *b, int row, int column)
@@ -62,6 +62,9 @@ void Board::move(string id, string direction, int units)
     } else if (direction == EAST) {
         moveEast(row, col, units);
         positions[itBlock->second] = make_pair(row, col + units);
+    } else if (direction == SOUTH) {
+        moveSouth(row, col, units);
+        positions[itBlock->second] = make_pair(row + units, col);
     }
 }
 
@@ -120,6 +123,28 @@ void Board::moveNorth(int row, int col, int units)
     }
 }
 
+void Board::moveSouth(int row, int col, int units)
+{
+    int width = (matrix[row][col])->getWidth();
+    int height = (matrix[row][col])->getHeight();
+
+    if (row + units + height > this->height)
+        throw "MOVE " + to_string(units) + " SOUTH is outside the Grid";
+
+    int finalRow = row + units;
+    int finalCol = col;
+
+    for (int i = height - 1; i >= 0; --i) {
+        for (int j = width - 1; j >= 0; --j) {
+            Block *oldBlock = matrix[row + i][col + j];
+            Block *newBlock = matrix[finalRow + i][finalCol + j];
+            if (newBlock != NULL)
+                throw "There is a block in final position while MOVE " + to_string(units) + " SOUTH";
+            swap(matrix[row + i][col + j], matrix[finalRow + i][finalCol + j]);
+        }
+    }
+}
+
 void Board::moveEast(int row, int col, int units)
 {
     if (col + units >= width)
@@ -144,7 +169,7 @@ void Board::moveEast(int row, int col, int units)
 
 ostream& operator<<(ostream& os, const Board &board)
 {
-    os << "Board " + to_string(board.height) + "x" + to_string(board.width) << endl;
+    os << "Board " + to_string(board.width) + "x" + to_string(board.height) << endl;
 
     for (int i = 0; i < board.matrix.size(); ++i) {
         for (int j = 0; j < board.matrix[0].size(); ++j) {

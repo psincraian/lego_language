@@ -1,6 +1,9 @@
 #include "Block.hpp"
 
 #include <utility>
+#include <queue>
+#include <unordered_map>
+#include <algorithm>
 
 Block::Block(int width, int height)
 {
@@ -46,9 +49,33 @@ bool Block::fits(const Block &block) const
         return fitsOver(block);
 }
 
-unordered_set<Block*> Block::blocksOver() const
+bool Block::fits(const Block &block, int level) const
 {
+    if (level < 0)
+        return false;
 
+    pair<int, int> pos = getFitPosition(block);
+    if (pos.first != -1 and pos.second != -1)
+        return true;
+
+    auto it = over.begin();
+    bool fits = false;
+    int i = 0;
+    while (it != over.end() and not fits) {
+        fits = (*it)->fits(block, level - 1);
+        ++it;
+    }
+
+    return fits;
+}
+
+int Block::totalHeight() const
+{
+    int result = 1;
+    for (auto it = over.begin(); it != over.end(); ++it)
+        result = max(result, (*it)->totalHeight() + 1);
+
+    return result;
 }
 
 bool Block::pop(Block *block)
@@ -148,15 +175,35 @@ bool Block::fitsInPosition(const Block &block, int row, int column) const
 Block* Block::fitsOver(const Block &block) const
 {
     unordered_set<Block*> looked;
+    priority_queue<int> heights;
+    unordered_map<Block*, int> blockHeights;
+    looked.insert(NULL);
     for (int i = 0; i < matrix.size(); ++i) {
         for (int j = 0; j < matrix[0].size(); ++j) {
             auto it = looked.find(matrix[i][j]);
             if (it == looked.end()) {
-                looked.insert(matrix[i][j]);
-                if (matrix[i][j]->fits(block))
-                    return matrix[i][j];
+                int height = -matrix[i][j]->totalHeight();
+                blockHeights[matrix[i][j]] = height;
+                heights.push(height);
             }
         }
+    }
+
+    looked.clear();
+    looked.insert(NULL);
+    while (not heights.empty()) {
+        for (int i = 0; i < matrix.size(); ++i) {
+            for (int j = 0; j < matrix[0].size(); ++j) {
+                auto it = looked.find(matrix[i][j]);
+                if (it == looked.end() && blockHeights[matrix[i][j]] == heights.top()) {
+                    heights.pop();
+                    if (matrix[i][j]->fits(block))
+                        return matrix[i][j];
+                }
+            }
+        }
+
+        heights.pop();
     }
 
     return NULL;

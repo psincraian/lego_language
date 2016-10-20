@@ -1,4 +1,4 @@
-CPPFLAGS= -std=c++11
+CPPFLAGS= -std=c++11 -g
 
 lego: lego.g parser.dlg scan.c Board Block
 	antlr -gt lego.g && dlg -ci parser.dlg scan.c && g++ $(CPPFLAGS) -Wno-write-strings -o lego Board.o Block.o lego.c scan.c err.c -I /home/soft/PCCTS_v1.33/include

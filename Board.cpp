@@ -82,7 +82,7 @@ Block* Board::place(int row, int column, int width, int height)
 void Board::move(string id, string direction, int units)
 {
     auto itBlock = blocks.find(id);
-    if (itBlock == blocks.end())
+    if (itBlock == blocks.end() or itBlock->second == NULL)
         throw string("Can't find block " + id);
 
     auto it = positions.find(itBlock->second);
@@ -196,6 +196,18 @@ void Board::moveNorthOrWest(int row, int col, int units, string direction)
     }
 
     positions[matrix[finalRow][finalCol]] = make_pair(finalRow, finalCol);
+}
+
+void Board::printHeightMatrix() const {
+    for (int i = 0; i < matrix.size(); ++i) {
+        for (int j = 0; j < matrix[0].size(); ++j) {
+            if (matrix[i][j] == NULL)
+                cout << 0 << " ";
+            else
+                cout << matrix[i][j]->totalHeight() << " ";
+        }
+        cout << endl;
+    }
 }
 
 ostream& operator<<(ostream& os, const Board &board)

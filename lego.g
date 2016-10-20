@@ -161,8 +161,12 @@ Block* getBlock(AST *a)
         return pop(a);
     else if (a->kind == "list")
         return getBasicBlock(a);
-    else
-        return board.find(a->kind);
+    else {
+        Block *b = board.find(a->kind);
+        if (b == NULL)
+            throw string("Can't find block " + a->kind);
+        return b;
+    }
 }
 
 void equal(AST *a)
@@ -191,6 +195,53 @@ void printblock(AST *a)
     cout << *b << endl;
 }
 
+bool fits(AST *a)
+{
+    Block *base = getBlock(a->down);
+    Block *over = getBlock(a->down->right);
+    int level = stoi(a->down->right->right->kind) - 1;
+    return base->fits(*over, level);
+}
+
+bool condition(AST *a)
+{
+    if (a->kind == "AND")
+        return condition(a->down) and condition(a->down->right);
+    else if (a->kind == "OR")
+        return condition(a->down) or condition(a->down->right);
+    else if (a->kind == "FITS")
+        return fits(a);
+    else
+        throw string("INVALID OPERATION " + a->kind);
+}
+
+void ops(AST *a);
+
+void opWhile(AST *a)
+{
+    while (condition(a->down)) {
+        ops(a->down->right->down);
+    }
+}
+
+void ops(AST *a)
+{
+    if (a == NULL)
+        return;
+    else if (a->kind == "=")
+        equal(a);
+    else if (a->kind == "MOVE")
+        move(a);
+    else if (a->kind == "PRINT")
+        print(a);
+    else if (a->kind == "PRINTBLOCK")
+        printblock(a);
+    else if (a->kind == "WHILE")
+        opWhile(a);
+
+    ops(a->right);
+}
+
 void interpret(AST *a)
 {
     if (a == NULL)
@@ -199,19 +250,7 @@ void interpret(AST *a)
         interpret(a->down);
     else if (a->kind == "Grid") {
         createGrid(a);
-        interpret(a->right);
-    } else if (a->kind == "=") {
-        equal(a);
-        interpret(a->right);
-    } else if (a->kind == "MOVE") {
-        move(a);
-        interpret(a->right);
-    } else if (a->kind == "PRINT") {
-        print(a);
-        interpret(a->right);
-    } else if (a->kind == "PRINTBLOCK") {
-        printblock(a);
-        interpret(a->right);
+        ops(a->right->down);
     }
 }
 
@@ -221,6 +260,7 @@ int main() {
   ASTPrint(root);
   try {
       interpret(root);
+      board.printHeightMatrix();
   } catch (string msg) {
       cout << msg << endl;
   }

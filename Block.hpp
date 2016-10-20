@@ -26,7 +26,8 @@ public:
     int getHeight() const;
     string getId() const;
     bool fits(const Block &block) const;
-    unordered_set<Block*> blocksOver() const;
+    bool fits(const Block &block, int level) const;
+    int totalHeight() const;
 
     void setId(string id);
     void push(Block *block);

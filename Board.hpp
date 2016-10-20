@@ -32,6 +32,7 @@ public:
     Board(int x, int y);
 
     Block* find(string id) const;
+    void printHeightMatrix() const;
 
     Block* push(Block *a, Block *b);
     Block* pop(Block *base, Block *over);

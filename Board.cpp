@@ -27,17 +27,17 @@ Block* Board::find(string id) const
 Block* Board::push(Block *a, Block *b)
 {
     if (a->getId() == "")
-        throw "The base block is not a valid block";
+        throw string("The base block is not a valid block");
 
     if (a->getId() == b->getId())
-        throw "Can't push a block over itself";
+        throw string("Can't push a block over itself");
 
     if (a->fits(*b)) {
         a->push(b);
         if (b->getId() != "")
             deleteBlock(b);
     } else
-        throw "Not enough space in " + a->getId();
+        throw string("Not enough space in " + a->getId());
 
     return a;
 }
@@ -67,7 +67,7 @@ void Board::move(string id, string direction, int units)
 {
     auto itBlock = blocks.find(id);
     if (itBlock == blocks.end())
-        throw "Can't find block " + id;
+        throw string("Can't find block " + id);
 
     auto it = positions.find(itBlock->second);
     int row = (it->second).first;
@@ -77,7 +77,7 @@ void Board::move(string id, string direction, int units)
     else if (direction == SOUTH or direction == EAST)
         moveSouthOrEast(row, col, units, direction);
     else
-        throw "Direction " + direction + " is invalid";
+        throw string("Direction " + direction + " is invalid");
 }
 
 void Board::setBlock(Block *b, int row, int column)

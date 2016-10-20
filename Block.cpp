@@ -1,6 +1,7 @@
 #include "Block.hpp"
 
 #include <utility>
+#include <unordered_set>
 
 Block::Block(int width, int height)
 {
@@ -39,10 +40,18 @@ string Block::getId() const
 bool Block::fits(const Block &block) const
 {
     if (remainingSpace < block.width*block.height)
-        return false;
+        return fitsOver(block);
 
     pair<int, int> fits = getFitPosition(block);
-    return fits.first != -1 and fits.second != -1;
+    if (fits.first != -1 and fits.second != -1)
+        return true;
+    else
+        return fitsOver(block);
+}
+
+list<Block*> Block::blocksOver() const
+{
+
 }
 
 void Block::setId(string id)
@@ -52,10 +61,17 @@ void Block::setId(string id)
 
 void Block::push(Block *block)
 {
+    pair<int, int> position = getFitPosition(*block);
+    if (position.first == -1 and position.second == -1) {
+        Block *over = fitsOver(*block);
+        if (over == NULL)
+            throw "Don't have enough space to push block";
+        over->push(block);
+        return;
+    }
+
     remainingSpace -= block->width*block->height;
     over.push_back(block);
-
-    pair<int, int> position = getFitPosition(*block);
     int finalRow = position.first + block->height;
     int finalColumn = position.second + block->width;
     for (int i = position.first; i < finalRow; ++i) {
@@ -104,6 +120,23 @@ bool Block::fitsInPosition(const Block &block, int row, int column) const
     }
 
     return fits;
+}
+
+Block* Block::fitsOver(const Block &block) const
+{
+    unordered_set<Block*> looked;
+    for (int i = 0; i < matrix.size(); ++i) {
+        for (int j = 0; j < matrix[0].size(); ++j) {
+            auto it = looked.find(matrix[i][j]);
+            if (it == looked.end()) {
+                looked.insert(matrix[i][j]);
+                if (matrix[i][j]->fits(block))
+                    return matrix[i][j];
+            }
+        }
+    }
+
+    return NULL;
 }
 
 ostream& operator<<(ostream& os, const Block &block)

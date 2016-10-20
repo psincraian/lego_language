@@ -16,6 +16,7 @@ private:
 
     pair<int, int> getFitPosition(const Block &block) const;
     bool fitsInPosition(const Block &block, int row, int column) const;
+    Block* fitsOver(const Block &block) const;
 
 public:
     Block(int width, int height);
@@ -25,6 +26,7 @@ public:
     int getHeight() const;
     string getId() const;
     bool fits(const Block &block) const;
+    list<Block*> blocksOver() const;
 
     void setId(string id);
     void push(Block *block);

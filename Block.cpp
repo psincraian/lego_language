@@ -116,8 +116,12 @@ ostream& operator<<(ostream& os, const Block &block)
 
     for (int i = 0; i < block.matrix.size(); ++i) {
         for (int j = 0; j < block.matrix[0].size(); ++j) {
-            if (block.matrix[i][j] != NULL)
-                os << block.matrix[i][j]->id;
+            if (block.matrix[i][j] != NULL) {
+                string id = block.matrix[i][j]->id;
+                if (id != "")
+                    os << id;
+                else os << block.matrix[i][j]->getWidth() << "x" << block.matrix[i][j]->getHeight();
+            }
             else
                 os << "-";
             os << "\t";

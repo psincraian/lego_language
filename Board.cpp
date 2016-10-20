@@ -36,7 +36,8 @@ Block* Board::push(Block *a, Block *b)
         a->push(b);
         if (b->getId() != "")
             deleteBlock(b);
-    }
+    } else
+        throw "Not enough space in " + a->getId();
 
     return a;
 }

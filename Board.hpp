@@ -34,6 +34,7 @@ public:
     Block* find(string id) const;
 
     Block* push(Block *a, Block *b);
+    Block* pop(Block *base, Block *over);
     void equal(string id, Block *b);
     void move(string id, string direction, int units);
     Block* place(int row, int column, int width, int height);

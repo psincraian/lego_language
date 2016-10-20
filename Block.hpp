@@ -1,7 +1,7 @@
 #include <ostream>
-#include <list>
 #include <vector>
 #include <string>
+#include <unordered_set>
 
 using namespace std;
 
@@ -11,7 +11,7 @@ private:
     string id;
     int width, height;
     int remainingSpace;
-    list<Block*> over;
+    unordered_set<Block*> over;
     vector< vector<Block*> > matrix;
 
     pair<int, int> getFitPosition(const Block &block) const;
@@ -26,10 +26,11 @@ public:
     int getHeight() const;
     string getId() const;
     bool fits(const Block &block) const;
-    list<Block*> blocksOver() const;
+    unordered_set<Block*> blocksOver() const;
 
     void setId(string id);
     void push(Block *block);
+    bool pop(Block *block);
 
     friend ostream& operator<<(ostream& os, const Block &block);
 };

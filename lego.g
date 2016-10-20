@@ -134,6 +134,13 @@ Block* place(AST *a)
     return board.place(row - 1, column - 1, width, height);
 }
 
+Block* pop(AST *a)
+{
+    Block *over = getBlock(a->down);
+    Block *base = getBlock(a->down->right);
+    return board.pop(base, over);
+}
+
 Block *getBasicBlock(AST *a)
 {
     int width = stoi(a->down->kind);
@@ -150,6 +157,8 @@ Block* getBlock(AST *a)
         return push(a);
     else if (a->kind == "PLACE")
         return place(a);
+    else if (a->kind == "POP")
+        return pop(a);
     else if (a->kind == "list")
         return getBasicBlock(a);
     else

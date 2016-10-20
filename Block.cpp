@@ -1,14 +1,12 @@
 #include "Block.hpp"
 
 #include <utility>
-#include <unordered_set>
 
 Block::Block(int width, int height)
 {
     this->width = width;
     this->height = height;
     remainingSpace = width*height;
-    over = list<Block*>();
     matrix = vector<vector<Block*>>(width, vector<Block*>(height));
 }
 
@@ -18,7 +16,6 @@ Block::Block(string id, int width, int height)
     this->width = width;
     this->height = height;
     remainingSpace = width*height;
-    over = list<Block*>();
     matrix = vector<vector<Block*>>(width, vector<Block*>(height));
 }
 
@@ -49,9 +46,35 @@ bool Block::fits(const Block &block) const
         return fitsOver(block);
 }
 
-list<Block*> Block::blocksOver() const
+unordered_set<Block*> Block::blocksOver() const
 {
 
+}
+
+bool Block::pop(Block *block)
+{
+    if (block->over.size() > 0)
+        throw string("The popped block has blocks over");
+
+    auto it = over.find(block);
+    bool deleted = it != over.end();
+    if (it != over.end()) {
+        over.erase(block);
+        for (int i = 0; i < matrix.size(); ++i) {
+            for (int j = 0; j < matrix[0].size(); ++j) {
+                if (matrix[i][j] == block)
+                    matrix[i][j] = NULL;
+            }
+        }
+    } else {
+        it = over.begin();
+        while (it != over.end() && not deleted) {
+            deleted = (*it)->pop(block);
+            ++it;
+        }
+    }
+
+    return deleted;
 }
 
 void Block::setId(string id)
@@ -71,7 +94,7 @@ void Block::push(Block *block)
     }
 
     remainingSpace -= block->width*block->height;
-    over.push_back(block);
+    over.insert(block);
     int finalRow = position.first + block->height;
     int finalColumn = position.second + block->width;
     for (int i = position.first; i < finalRow; ++i) {

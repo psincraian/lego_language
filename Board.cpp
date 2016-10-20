@@ -42,6 +42,22 @@ Block* Board::push(Block *a, Block *b)
     return a;
 }
 
+Block* Board::pop(Block *base, Block *over)
+{
+    if (base->getId() == "")
+        throw string("The base block is not a valid block");
+
+    if (over->getId() == "")
+        throw string("The over block is not a valid block");
+
+    bool deleted = base->pop(over);
+    if (not deleted)
+        throw string("The block isn't over");
+
+    blocks[over->getId()] = NULL;
+    return base;
+}
+
 void Board::equal(string id, Block *block)
 {
     blocks[id] = block;

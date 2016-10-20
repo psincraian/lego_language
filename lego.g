@@ -115,10 +115,12 @@ void createGrid(AST *a)
     board = Board(rows, columns);
 }
 
+Block* getBlock(AST *a);
+
 Block* push(AST *a)
 {
-    Block *over = board.find(a->down->kind);
-    Block *base = board.find(a->down->right->kind);
+    Block *over = getBlock(a->down);
+    Block *base = getBlock(a->down->right);
     return board.push(base, over);
 }
 
@@ -132,6 +134,14 @@ Block* place(AST *a)
     return board.place(row - 1, column - 1, width, height);
 }
 
+Block *getBasicBlock(AST *a)
+{
+    int width = stoi(a->down->kind);
+    int height = stoi(a->down->right->kind);
+
+    return new Block(width, height);
+}
+
 Block* getBlock(AST *a)
 {
     if (a == NULL)
@@ -140,10 +150,10 @@ Block* getBlock(AST *a)
         return push(a);
     else if (a->kind == "PLACE")
         return place(a);
-    else {
-        string msg = "operation " + a->kind + " don't return a Block";
-        throw msg;
-    }
+    else if (a->kind == "list")
+        return getBasicBlock(a);
+    else
+        return board.find(a->kind);
 }
 
 void equal(AST *a)

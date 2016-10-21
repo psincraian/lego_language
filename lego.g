@@ -107,6 +107,7 @@ void ASTPrint(AST *a)
 }
 
 Board board;
+map<string,AST*> functions;
 
 void createGrid(AST *a)
 {
@@ -260,6 +261,15 @@ void opWhile(AST *a)
     }
 }
 
+void opFunction(AST *a)
+{
+    auto it = functions.find(a->kind);
+    if (it == functions.end())
+        throw string(a->kind + " is not a valid operation");
+
+    ops(it->second);
+}
+
 void ops(AST *a)
 {
     if (a == NULL)
@@ -274,8 +284,23 @@ void ops(AST *a)
         printblock(a);
     else if (a->kind == "WHILE")
         opWhile(a);
+    else
+        opFunction(a);
 
     ops(a->right);
+}
+
+void defs(AST *a)
+{
+    if (a == NULL)
+        return;
+    else if (a->kind == "DEF") {
+        string name = a->down->kind;
+        AST *ops = a->down->right->down;
+        functions[name] = ops;
+    }
+
+    defs(a->right);
 }
 
 void interpret(AST *a)
@@ -286,6 +311,7 @@ void interpret(AST *a)
         interpret(a->down);
     else if (a->kind == "Grid") {
         createGrid(a);
+        defs(a->right->right->down);
         ops(a->right->down);
     }
 }

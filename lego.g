@@ -149,6 +149,14 @@ Block *getBasicBlock(AST *a)
     return new Block(width, height);
 }
 
+Block* findBlock(string id)
+{
+    Block *b = board.find(id);
+    if (b == NULL)
+        throw string("Can't find block " + id);
+    return b;
+}
+
 Block* getBlock(AST *a)
 {
     if (a == NULL)
@@ -161,12 +169,8 @@ Block* getBlock(AST *a)
         return pop(a);
     else if (a->kind == "list")
         return getBasicBlock(a);
-    else {
-        Block *b = board.find(a->kind);
-        if (b == NULL)
-            throw string("Can't find block " + a->kind);
-        return b;
-    }
+    else
+        return findBlock(a->kind);
 }
 
 void equal(AST *a)
@@ -203,6 +207,34 @@ bool fits(AST *a)
     return base->fits(*over, level);
 }
 
+int height(AST *a)
+{
+    Block *block = findBlock(a->down->kind);
+    return block->totalHeight();
+}
+
+int getNumber(AST *a)
+{
+    if (a->kind == "HEIGHT")
+        return height(a);
+    else
+        return stoi(a->kind);
+}
+
+bool opLess(AST *a)
+{
+    int left = getNumber(a->down);
+    int right = getNumber(a->down->right);
+    return left < right;
+}
+
+bool opGreater(AST *a)
+{
+    int left = getNumber(a->down);
+    int right = getNumber(a->down->right);
+    return left > right;
+}
+
 bool condition(AST *a)
 {
     if (a->kind == "AND")
@@ -211,6 +243,10 @@ bool condition(AST *a)
         return condition(a->down) or condition(a->down->right);
     else if (a->kind == "FITS")
         return fits(a);
+    else if (a->kind == "<")
+        return opLess(a);
+    else if (a->kind == ">")
+        return opGreater(a);
     else
         throw string("INVALID OPERATION " + a->kind);
 }
@@ -335,7 +371,7 @@ op_push:	elem {(PUSH^ op_push| POP^ op_pop)};
 op_while: 	WHILE^ LPAR! op_condition RPAR! OB! ops CB!;
 op_condition:	op_and (OR^ (op_fits | op_boolean))* ;
 op_and:		(op_fits | op_boolean) {AND^ op_and};
-op_boolean:	(op_height | NUM) (CMP_LESS^ | CMP_LESS_EQUAL^ | CMP_GREATER^ | CMP_GREATER_EQUAL^ | CMP_EQUAL^) (op_height | NUM);
+op_boolean:	(op_height | NUM) (CMP_LESS^ | CMP_GREATER^) (op_height | NUM);
 op_fits:	FITS^ LPAR! VAR COMMA! elem COMMA! NUM RPAR!;
 
 defs:		(op_def) *<<#0=createASTlist(_sibling);>>;

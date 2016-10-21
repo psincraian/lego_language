@@ -43,7 +43,6 @@
 #define VAR 33
 #define TAB 34
 #define SPACE 35
-#define CMP_GREATER_EQUAL 36
 
 #ifdef __USE_PROTOS
 void lego(AST**_root);

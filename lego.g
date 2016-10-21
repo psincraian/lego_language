@@ -322,7 +322,6 @@ int main() {
   ASTPrint(root);
   try {
       interpret(root);
-      board.printHeightMatrix();
   } catch (string msg) {
       cout << msg << endl;
   }

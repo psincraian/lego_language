@@ -1,5 +1,6 @@
 #include <vector>
 #include <map>
+#include <unordered_set>
 
 #include "Block.hpp"
 
@@ -10,7 +11,8 @@ typedef vector< vector<Block*> > Matrix;
 class Board
 {
 private:
-    map<string, Block*> blocks;
+    unordered_set<Block*> blocks;
+    map<string, Block*> ids;
     map< Block*, pair<int, int> > positions;
     Matrix matrix;
     int width;
@@ -30,6 +32,8 @@ public:
 
     Board();
     Board(int x, int y);
+
+    ~Board();
 
     Block* find(string id) const;
     void printHeightMatrix() const;

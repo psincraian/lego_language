@@ -15,10 +15,16 @@ Board::Board(int width, int height)
     matrix = Matrix(height, vector<Block*>(width));
 }
 
+Board::~Board()
+{
+    for (auto it = blocks.begin(); it != blocks.end(); ++it)
+        delete *it;
+}
+
 Block* Board::find(string id) const
 {
-    auto it = blocks.find(id);
-    if (it != blocks.end())
+    auto it = ids.find(id);
+    if (it != ids.end())
         return it->second;
     else
         return NULL;
@@ -26,6 +32,8 @@ Block* Board::find(string id) const
 
 Block* Board::push(Block *a, Block *b)
 {
+    blocks.insert(a);
+    blocks.insert(b);
     if (a->getId() == "")
         throw string("The base block is not a valid block");
 
@@ -54,13 +62,14 @@ Block* Board::pop(Block *base, Block *over)
     if (not deleted)
         throw string("The block isn't over");
 
-    blocks[over->getId()] = NULL;
+    ids[over->getId()] = NULL;
     return base;
 }
 
 void Board::equal(string id, Block *block)
 {
-    blocks[id] = block;
+    ids[id] = block;
+    blocks.insert(block);
     block->setId(id);
 }
 
@@ -68,6 +77,7 @@ Block* Board::place(int row, int column, int width, int height)
 {
     Block *block = new Block(width, height);
     if (fitsInPosition(*block, row, column)) {
+        blocks.insert(block);
         setBlock(block, row, column);
     } else {
         delete block;
@@ -81,8 +91,8 @@ Block* Board::place(int row, int column, int width, int height)
 
 void Board::move(string id, string direction, int units)
 {
-    auto itBlock = blocks.find(id);
-    if (itBlock == blocks.end() or itBlock->second == NULL)
+    auto itBlock = ids.find(id);
+    if (itBlock == ids.end() or itBlock->second == NULL)
         throw string("Can't find block " + id);
 
     auto it = positions.find(itBlock->second);

@@ -182,6 +182,7 @@ Block* Block::fitsOver(const Block &block) const
         for (int j = 0; j < matrix[0].size(); ++j) {
             auto it = looked.find(matrix[i][j]);
             if (it == looked.end()) {
+                looked.insert(matrix[i][j]);
                 int height = -matrix[i][j]->totalHeight();
                 blockHeights[matrix[i][j]] = height;
                 heights.push(height);
@@ -196,14 +197,13 @@ Block* Block::fitsOver(const Block &block) const
             for (int j = 0; j < matrix[0].size(); ++j) {
                 auto it = looked.find(matrix[i][j]);
                 if (it == looked.end() && blockHeights[matrix[i][j]] == heights.top()) {
+                    looked.insert(matrix[i][j]);
                     heights.pop();
                     if (matrix[i][j]->fits(block))
                         return matrix[i][j];
                 }
             }
         }
-
-        heights.pop();
     }
 
     return NULL;

@@ -284,6 +284,8 @@ void ops(AST *a)
         printblock(a);
     else if (a->kind == "WHILE")
         opWhile(a);
+    else if (a->kind == "HEIGHT")
+        height(a);
     else
         opFunction(a);
 

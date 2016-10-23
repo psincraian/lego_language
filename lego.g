@@ -282,6 +282,8 @@ void ops(AST *a)
         print(a);
     else if (a->kind == "PRINTBLOCK")
         printblock(a);
+    else if (a->kind == "PRINTHEIGHT")
+        board.printHeightMatrix();
     else if (a->kind == "WHILE")
         opWhile(a);
     else if (a->kind == "HEIGHT")
@@ -362,6 +364,7 @@ int main() {
 #token AND "AND"
 #token OR "OR"
 #token PRINTBLOCK "PRINTBLOCK"
+#token PRINTHEIGHT "PRINTHEIGHT"
 #token PRINT "PRINT"
 #token VAR "[A-Z]+([A-Z]|[0-9])*"
 #token TAB "[\t]" << zzskip();>>
@@ -373,6 +376,7 @@ grid: GRID^ NUM NUM ;
 
 ops:	(
             op_print_b      |
+            op_print_h      |
             op_print        |
 			op_while		|
 			op_id		 	|
@@ -383,6 +387,7 @@ ops:	(
 
 op_id:		VAR {EQUAL^ ops_equal};
 op_print_b: PRINTBLOCK^ VAR;
+op_print_h: PRINTHEIGHT^;
 op_print:   PRINT^;
 op_move: 	MOVE^ VAR (NORTH | EAST | SOUTH | WEST) NUM;
 op_height:	HEIGHT^ LPAR! VAR RPAR!;

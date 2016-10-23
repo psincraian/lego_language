@@ -39,10 +39,11 @@
 #define AND 29
 #define OR 30
 #define PRINTBLOCK 31
-#define PRINT 32
-#define VAR 33
-#define TAB 34
-#define SPACE 35
+#define PRINTHEIGHT 32
+#define PRINT 33
+#define VAR 34
+#define TAB 35
+#define SPACE 36
 
 #ifdef __USE_PROTOS
 void lego(AST**_root);
@@ -72,6 +73,12 @@ extern void op_id();
 void op_print_b(AST**_root);
 #else
 extern void op_print_b();
+#endif
+
+#ifdef __USE_PROTOS
+void op_print_h(AST**_root);
+#else
+extern void op_print_h();
 #endif
 
 #ifdef __USE_PROTOS
@@ -184,23 +191,23 @@ extern void coord();
 
 #endif
 extern SetWordType zzerr1[];
-extern SetWordType zzerr2[];
 extern SetWordType setwd1[];
+extern SetWordType zzerr2[];
 extern SetWordType zzerr3[];
 extern SetWordType zzerr4[];
-extern SetWordType zzerr5[];
 extern SetWordType setwd2[];
+extern SetWordType zzerr5[];
 extern SetWordType zzerr6[];
 extern SetWordType zzerr7[];
 extern SetWordType zzerr8[];
-extern SetWordType zzerr9[];
 extern SetWordType setwd3[];
+extern SetWordType zzerr9[];
 extern SetWordType zzerr10[];
 extern SetWordType zzerr11[];
 extern SetWordType zzerr12[];
 extern SetWordType zzerr13[];
 extern SetWordType zzerr14[];
-extern SetWordType zzerr15[];
 extern SetWordType setwd4[];
+extern SetWordType zzerr15[];
 extern SetWordType zzerr16[];
 extern SetWordType setwd5[];

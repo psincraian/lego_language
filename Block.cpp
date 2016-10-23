@@ -10,7 +10,7 @@ Block::Block(int width, int height)
     this->width = width;
     this->height = height;
     remainingSpace = width*height;
-    matrix = vector<vector<Block*>>(width, vector<Block*>(height));
+    matrix = vector<vector<Block*>>(height, vector<Block*>(width));
 }
 
 Block::Block(string id, int width, int height)
@@ -100,6 +100,9 @@ bool Block::pop(Block *block)
             ++it;
         }
     }
+
+    if (deleted)
+        remainingSpace += (*block).width * (*block).height;
 
     return deleted;
 }

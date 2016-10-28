@@ -33,7 +33,7 @@ ENDEF
 ```
 
 ## Compilation ##
-To compile the program only need to do:
+To compile the program only need to have installed [pccts](http://packages.ubuntu.com/xenial/pccts) and do:
 
 ```
 git clone https://github.com/psincraian/lego_language.git
